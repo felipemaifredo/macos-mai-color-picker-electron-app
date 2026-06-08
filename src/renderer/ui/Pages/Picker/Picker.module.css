@@ -18,107 +18,63 @@
   z-index: 1;
 }
 
-.floatingWidget {
+.cursorIndicator {
   position: absolute;
-  z-index: 10;
-  pointer-events: none; /* Pass through clicks to container */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  transform: translate(-50%, -50%); /* Center on cursor */
-  transition: transform 0.05s linear;
-}
-
-.magnifierRing {
-  width: 130px;
-  height: 130px;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid #ffffff;
   border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.85);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 0 16px rgba(0, 240, 255, 0.25);
-  overflow: hidden;
-  position: relative;
-  background-color: rgba(28, 28, 36, 0.85);
-}
-
-.magnifierCanvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Center dot/indicator inside the magnifying glass */
-.centerReticle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  border: 1.5px solid #00f0ff;
-  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 4px rgba(0, 240, 255, 0.8);
   pointer-events: none;
-  z-index: 2;
+  z-index: 100;
 }
 
-.infoCard {
-  background: rgba(28, 28, 36, 0.85);
+.floatingBox {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(28, 28, 36, 0.75);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 10px 14px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 99;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-width: 130px;
+}
+
+.colorPreview {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.colorTextContainer {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 180px;
+  gap: 1px;
 }
 
-.colorRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-.formatLabel {
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.38);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.colorValue {
-  font-size: 12px;
+.rgbText {
+  font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  line-height: 1.2;
 }
 
-.colorRow.active .colorValue {
-  color: #00f0ff;
-  text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
-}
-
-.colorRow.active .formatLabel {
-  color: rgba(0, 240, 255, 0.7);
-}
-
-.divider {
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.08);
-  margin: 2px 0;
-}
-
-.tips {
+.hexText {
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.38);
-  text-align: center;
-  line-height: 1.4;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  line-height: 1.2;
 }
 
 /* Copy notification toast */

@@ -16,19 +16,17 @@ type ColorInfo = {
 //Main
 function Picker(): React.JSX.Element {
   let [color, setColor] = useState<ColorInfo>({
-    hex: '#000000',
-    rgb: 'rgb(0, 0, 0)',
-    hsl: 'hsl(0, 0%, 0%)',
-    hsv: 'hsv(0, 0%, 0%)'
+    hex: "#000000",
+    rgb: "rgb(0, 0, 0)",
+    hsl: "hsl(0, 0%, 0%)",
+    hsv: "hsv(0, 0%, 0%)"
   })
 
-  let [activeFormat, setActiveFormat] = useState<'hex' | 'rgb' | 'hsl' | 'hsv'>('hex')
   let [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
-  let [toast, setToast] = useState<{ show: boolean; text: string }>({ show: false, text: '' })
+  let [toast, setToast] = useState<{ show: boolean; text: string }>({ show: false, text: "" })
   let [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
 
   let bgCanvasRef = useRef<HTMLCanvasElement | null>(null)
-  let magCanvasRef = useRef<HTMLCanvasElement | null>(null)
   let imageRef = useRef<HTMLImageElement | null>(null)
   let offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -40,11 +38,11 @@ function Picker(): React.JSX.Element {
     let originalAlignItems = document.body.style.alignItems
     let originalJustifyContent = document.body.style.justifyContent
 
-    document.body.style.background = 'transparent'
-    document.body.style.backgroundImage = 'none'
-    document.body.style.display = 'block'
-    document.body.style.alignItems = 'stretch'
-    document.body.style.justifyContent = 'stretch'
+    document.body.style.background = "transparent"
+    document.body.style.backgroundImage = "none"
+    document.body.style.display = "block"
+    document.body.style.alignItems = "stretch"
+    document.body.style.justifyContent = "stretch"
 
     return function () {
       document.body.style.background = originalBg
@@ -69,20 +67,17 @@ function Picker(): React.JSX.Element {
         if (bgCanvas) {
           bgCanvas.width = window.innerWidth
           bgCanvas.height = window.innerHeight
-          let ctx = bgCanvas.getContext('2d')
+          let ctx = bgCanvas.getContext("2d")
           if (ctx) {
             ctx.drawImage(img, 0, 0, window.innerWidth, window.innerHeight)
-            // Apply slight dark overlay
-            ctx.fillStyle = 'rgba(15, 15, 20, 0.4)'
-            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight)
           }
         }
 
         // Draw offscreen canvas for exact pixel values
-        let offCanvas = document.createElement('canvas')
+        let offCanvas = document.createElement("canvas")
         offCanvas.width = img.width
         offCanvas.height = img.height
-        let offCtx = offCanvas.getContext('2d')
+        let offCtx = offCanvas.getContext("2d")
         if (offCtx) {
           offCtx.drawImage(img, 0, 0)
         }
@@ -97,23 +92,11 @@ function Picker(): React.JSX.Element {
   useEffect(
     function () {
       let handleKeyDown = function (event: KeyboardEvent) {
-        if (event.key === 'Escape') {
+        if (event.key === "Escape") {
           window.api.cancelSelection()
-        } else if (event.key === 'Tab') {
+        } else if (event.key === "Enter") {
           event.preventDefault()
-          setActiveFormat(function (prev) {
-            if (prev === 'hex') return 'rgb'
-            if (prev === 'rgb') return 'hsl'
-            if (prev === 'hsl') return 'hsv'
-            return 'hex'
-          })
-        } else if (event.key === 'Enter') {
-          event.preventDefault()
-          let textToCopy = ''
-          if (activeFormat === 'hex') textToCopy = color.hex
-          else if (activeFormat === 'rgb') textToCopy = color.rgb
-          else if (activeFormat === 'hsl') textToCopy = color.hsl
-          else if (activeFormat === 'hsv') textToCopy = color.hsv
+          let textToCopy = color.rgb
 
           // Direct clipboard copy & notify main process
           window.api.copyToClipboard(textToCopy)
@@ -131,12 +114,12 @@ function Picker(): React.JSX.Element {
         }
       }
 
-      window.addEventListener('keydown', handleKeyDown)
+      window.addEventListener("keydown", handleKeyDown)
       return function () {
-        window.removeEventListener('keydown', handleKeyDown)
+        window.removeEventListener("keydown", handleKeyDown)
       }
     },
-    [color, activeFormat]
+    [color]
   )
 
   let handleMouseMove = function (event: React.MouseEvent<HTMLDivElement>) {
@@ -148,7 +131,7 @@ function Picker(): React.JSX.Element {
     let offCanvas = offscreenCanvasRef.current
     if (!img || !offCanvas) return
 
-    let offCtx = offCanvas.getContext('2d', { willReadFrequently: true })
+    let offCtx = offCanvas.getContext("2d", { willReadFrequently: true })
     if (!offCtx) return
 
     // Map logical mouse coordinates to physical image coordinates
@@ -179,157 +162,75 @@ function Picker(): React.JSX.Element {
         hsv: `hsv(${hsvVal.h}, ${hsvVal.s}%, ${hsvVal.v}%)`
       }
       setColor(newColor)
-
-      // Draw the magnifier canvas
-      let magCanvas = magCanvasRef.current
-      if (magCanvas) {
-        let magCtx = magCanvas.getContext('2d')
-        if (magCtx) {
-          let zoomFactor = 13 // Zoom multiplier
-          let gridPixels = 9 // Grid is 9x9 physical pixels
-          let totalSize = gridPixels * zoomFactor // 117px
-
-          magCanvas.width = totalSize
-          magCanvas.height = totalSize
-
-          magCtx.imageSmoothingEnabled = false
-
-          // Clear and draw background
-          magCtx.fillStyle = '#000000'
-          magCtx.fillRect(0, 0, totalSize, totalSize)
-
-          // Draw slice of image centered around the cursor
-          let srcX = physicalX - Math.floor(gridPixels / 2)
-          let srcY = physicalY - Math.floor(gridPixels / 2)
-
-          magCtx.drawImage(
-            offCanvas,
-            srcX,
-            srcY,
-            gridPixels,
-            gridPixels,
-            0,
-            0,
-            totalSize,
-            totalSize
-          )
-
-          // Draw Grid overlay
-          magCtx.strokeStyle = 'rgba(255, 255, 255, 0.15)'
-          magCtx.lineWidth = 1
-          for (let i = 0; i <= gridPixels; i++) {
-            // Vertical line
-            magCtx.beginPath()
-            magCtx.moveTo(i * zoomFactor, 0)
-            magCtx.lineTo(i * zoomFactor, totalSize)
-            magCtx.stroke()
-
-            // Horizontal line
-            magCtx.beginPath()
-            magCtx.moveTo(0, i * zoomFactor)
-            magCtx.lineTo(totalSize, i * zoomFactor)
-            magCtx.stroke()
-          }
-
-          // Highlight Central Pixel
-          let centerIndex = Math.floor(gridPixels / 2)
-          magCtx.strokeStyle = '#00f0ff'
-          magCtx.lineWidth = 1.5
-          magCtx.strokeRect(
-            centerIndex * zoomFactor,
-            centerIndex * zoomFactor,
-            zoomFactor,
-            zoomFactor
-          )
-        }
-      }
     } catch (e) {
-      console.error('Erro ao ler pixels:', e)
+      console.error("Erro ao ler pixels:", e)
     }
   }
 
   let handleSelectColor = function () {
-    // Click action copies HEX and closes
-    window.api.copyToClipboard(color.hex)
-    setToast({ show: true, text: color.hex })
+    // Click action copies RGB and closes
+    window.api.copyToClipboard(color.rgb)
+    setToast({ show: true, text: color.rgb })
     setTimeout(function () {
       window.api.selectColor({
         hex: color.hex,
         rgb: color.rgb,
         hsl: color.hsl,
-        hsv: color.hsv
-      })
+        hsv: color.hsv,
+        selectedFormatText: color.rgb
+      } as any)
     }, 800)
   }
 
-  // Adjust widget position to avoid off-screen overflow
-  let widgetStyle: React.CSSProperties = {}
-  let widgetOffset = 20
-  let widgetWidth = 190
-  let widgetHeight = 270
+  // Position adjustments to avoid off-screen overflow
+  let boxWidth = 150
+  let boxHeight = 44
+  let offsetX = 16
+  let offsetY = 16
 
-  if (mousePos.x > window.innerWidth - widgetWidth - widgetOffset) {
-    widgetStyle.left = mousePos.x - widgetWidth / 2 - widgetOffset - 40
-  } else {
-    widgetStyle.left = mousePos.x + widgetWidth / 2 + widgetOffset + 40
+  let leftPos = mousePos.x + offsetX
+  let topPos = mousePos.y + offsetY
+
+  if (leftPos + boxWidth > window.innerWidth) {
+    leftPos = mousePos.x - boxWidth - offsetX
+  }
+  if (topPos + boxHeight > window.innerHeight) {
+    topPos = mousePos.y - boxHeight - offsetY
   }
 
-  if (mousePos.y > window.innerHeight - widgetHeight / 2 - widgetOffset) {
-    widgetStyle.top = window.innerHeight - widgetHeight / 2 - widgetOffset
-  } else if (mousePos.y < widgetHeight / 2 + widgetOffset) {
-    widgetStyle.top = widgetHeight / 2 + widgetOffset
-  } else {
-    widgetStyle.top = mousePos.y
-  }
+  leftPos = Math.max(8, leftPos)
+  topPos = Math.max(8, topPos)
 
   return (
     <div className={styles.container} onMouseMove={handleMouseMove} onClick={handleSelectColor}>
       <canvas ref={bgCanvasRef} className={styles.backgroundCanvas} />
 
       {isImageLoaded && (
-        <div
-          className={styles.floatingWidget}
-          style={{
-            left: widgetStyle.left,
-            top: widgetStyle.top
-          }}
-        >
-          <div className={styles.magnifierRing}>
-            <canvas ref={magCanvasRef} className={styles.magnifierCanvas} />
-            <div className={styles.centerReticle} />
-          </div>
-
-          <div className={styles.infoCard}>
-            <div className={`${styles.colorRow} ${activeFormat === 'hex' ? styles.active : ''}`}>
-              <span className={styles.formatLabel}>Hex</span>
-              <span className={styles.colorValue}>{color.hex}</span>
-            </div>
-            <div className={styles.divider} />
-            <div className={`${styles.colorRow} ${activeFormat === 'rgb' ? styles.active : ''}`}>
-              <span className={styles.formatLabel}>Rgb</span>
-              <span className={styles.colorValue}>{color.rgb}</span>
-            </div>
-            <div className={styles.divider} />
-            <div className={`${styles.colorRow} ${activeFormat === 'hsl' ? styles.active : ''}`}>
-              <span className={styles.formatLabel}>Hsl</span>
-              <span className={styles.colorValue}>{color.hsl}</span>
-            </div>
-            <div className={styles.divider} />
-            <div className={`${styles.colorRow} ${activeFormat === 'hsv' ? styles.active : ''}`}>
-              <span className={styles.formatLabel}>Hsv</span>
-              <span className={styles.colorValue}>{color.hsv}</span>
-            </div>
-            <div className={styles.divider} />
-            <div className={styles.tips}>
-              TAB: Mudar formato
-              <br />
-              ENTER / CLIQUE: Copiar
+        <>
+          <div
+            className={styles.cursorIndicator}
+            style={{
+              left: mousePos.x,
+              top: mousePos.y
+            }}
+          />
+          <div
+            className={styles.floatingBox}
+            style={{
+              left: leftPos,
+              top: topPos
+            }}
+          >
+            <div className={styles.colorPreview} style={{ backgroundColor: color.rgb }} />
+            <div className={styles.colorTextContainer}>
+              <div className={styles.rgbText}>{color.rgb}</div>
+              <div className={styles.hexText}>{color.hex}</div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
-      <div className={`${styles.toast} ${toast.show ? styles.show : ''}`}>
+      <div className={`${styles.toast} ${toast.show ? styles.show : ""}`}>
         <span className={styles.toastTitle}>Cor Copiada!</span>
         <span className={styles.toastBody}>{toast.text}</span>
       </div>

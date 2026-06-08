@@ -48,12 +48,16 @@ let pickerWindow: BrowserWindow | null = null
 function createHistoryWindow(): void {
   let win = new BrowserWindow({
     width: 360,
-    height: 520,
+    height: 580,
+    minWidth: 360,
+    maxWidth: 360,
+    minHeight: 580,
+    maxHeight: 580,
     show: false,
     resizable: false,
     maximizable: false,
     fullscreenable: false,
-    titleBarStyle: 'hidden',
+    titleBarStyle: "hidden",
     trafficLightPosition: { x: 12, y: 12 },
     webPreferences: {
       preload: join(__dirname, '../preload/preload.js'),
@@ -82,20 +86,30 @@ function createHistoryWindow(): void {
 }
 
 async function startColorPicker(): Promise<void> {
-  let status = systemPreferences.getMediaAccessStatus('screen')
-  if (status !== 'granted') {
+  let status = systemPreferences.getMediaAccessStatus("screen")
+  if (status !== "granted") {
     if (historyWindow) {
       historyWindow.show()
-      historyWindow.webContents.send('permission-status-changed', false)
+      historyWindow.webContents.send("permission-status-changed", false)
     }
     return
   }
 
+  if (historyWindow) {
+    historyWindow.hide()
+  }
+
   try {
+    await new Promise(function (resolve) {
+      setTimeout(resolve, 150)
+    })
+
     let capture = await captureActiveScreen()
 
     if (pickerWindow) {
+      pickerWindow.removeAllListeners("closed")
       pickerWindow.close()
+      pickerWindow = null
     }
 
     let win = new BrowserWindow({
@@ -115,7 +129,7 @@ async function startColorPicker(): Promise<void> {
       maximizable: false,
       fullscreenable: false,
       webPreferences: {
-        preload: join(__dirname, '../preload/preload.js'),
+        preload: join(__dirname, "../preload/preload.js"),
         sandbox: false,
         contextIsolation: true,
         nodeIntegration: false
@@ -123,27 +137,33 @@ async function startColorPicker(): Promise<void> {
     })
 
     pickerWindow = win
-    win.setAlwaysOnTop(true, 'screen-saver')
+    win.setAlwaysOnTop(true, "screen-saver")
     win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
-    win.once('ready-to-show', () => {
+    win.once("ready-to-show", () => {
       win.show()
       win.focus()
-      win.webContents.send('screen-captured', capture.imgDataUrl)
+      win.webContents.send("screen-captured", capture.imgDataUrl)
     })
 
-    win.on('closed', () => {
+    win.on("closed", () => {
       pickerWindow = null
+      if (historyWindow) {
+        historyWindow.show()
+      }
     })
 
-    let devUrl = process.env['ELECTRON_RENDERER_URL']
+    let devUrl = process.env["ELECTRON_RENDERER_URL"]
     if (devUrl) {
       win.loadURL(`${devUrl}?page=picker`)
     } else {
-      win.loadFile(join(__dirname, '../renderer/index.html'), { query: { page: 'picker' } })
+      win.loadFile(join(__dirname, "../renderer/index.html"), { query: { page: "picker" } })
     }
   } catch (error) {
-    console.error('Falha ao iniciar o Color Picker:', error)
+    console.error("Falha ao iniciar o Color Picker:", error)
+    if (historyWindow) {
+      historyWindow.show()
+    }
   }
 }
 

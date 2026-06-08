@@ -41,6 +41,9 @@ function Permission(): React.JSX.Element {
         <button className={styles.button} onClick={handleOpenSettings}>
           Abrir Ajustes do Sistema
         </button>
+        <div className={styles.devTip}>
+          <strong>Nota de desenvolvimento:</strong> Se você estiver rodando o aplicativo via terminal ou editor (ex: npm run dev), certifique-se de que o seu <strong>Terminal</strong> ou <strong>VS Code/Cursor</strong> possui a permissão de Gravação de Tela nos Ajustes do Sistema do macOS. Caso contrário, apenas o plano de fundo (mesa) será capturado.
+        </div>
       </div>
     </div>
   )
