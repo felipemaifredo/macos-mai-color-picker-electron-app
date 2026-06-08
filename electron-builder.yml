@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: macos-color-picker-electron-app
+productName: Color Picker
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: macos-color-picker-electron-app
+  executableName: color-picker
   icon: assets/win/icon-3.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}

@@ -1,8 +1,8 @@
 //Libs
-import { ElectronAPI } from "@electron-toolkit/preload"
+import { ElectronAPI } from '@electron-toolkit/preload'
 
 //Imports
-import { ColorHistoryItem } from "../renderer/types"
+import { ColorHistoryItem } from '../renderer/types'
 
 //Types
 export type WindowApi = {
@@ -25,4 +25,3 @@ declare global {
     api: WindowApi
   }
 }
-

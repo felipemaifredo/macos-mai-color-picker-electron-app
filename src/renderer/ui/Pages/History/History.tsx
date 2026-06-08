@@ -1,43 +1,43 @@
 //Libs
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 
 //Imports
-import { ColorHistoryItem } from "../../../types"
-import styles from "./History.module.css"
+import { ColorHistoryItem } from '../../../types'
+import styles from './History.module.css'
 
 //Main
 function History(): React.JSX.Element {
   let [historyList, setHistoryList] = useState<ColorHistoryItem[]>([])
-  let [toast, setToast] = useState<{ show: boolean; text: string }>({ show: false, text: "" })
+  let [toast, setToast] = useState<{ show: boolean; text: string }>({ show: false, text: '' })
 
   // Fetch initial history and subscribe to changes
-  useEffect(function() {
-    window.api.getHistory().then(function(initialHistory) {
+  useEffect(function () {
+    window.api.getHistory().then(function (initialHistory) {
       setHistoryList(initialHistory)
     })
 
-    window.api.onHistoryUpdated(function(updatedHistory) {
+    window.api.onHistoryUpdated(function (updatedHistory) {
       setHistoryList(updatedHistory)
     })
   }, [])
 
-  let handleCopyColor = function(text: string) {
+  let handleCopyColor = function (text: string) {
     window.api.copyToClipboard(text)
     setToast({ show: true, text: `Copiado: ${text}` })
-    setTimeout(function() {
-      setToast({ show: false, text: "" })
+    setTimeout(function () {
+      setToast({ show: false, text: '' })
     }, 1500)
   }
 
-  let handleRemoveItem = function(event: React.MouseEvent, timestamp: number) {
+  let handleRemoveItem = function (event: React.MouseEvent, timestamp: number) {
     event.stopPropagation() // Prevent triggering copy row click
-    window.api.removeHistoryItem(timestamp).then(function(updated) {
+    window.api.removeHistoryItem(timestamp).then(function (updated) {
       setHistoryList(updated)
     })
   }
 
-  let handleClearHistory = function() {
-    window.api.clearHistory().then(function(updated) {
+  let handleClearHistory = function () {
+    window.api.clearHistory().then(function (updated) {
       setHistoryList(updated)
     })
   }
@@ -68,19 +68,16 @@ function History(): React.JSX.Element {
         </div>
       ) : (
         <div className={styles.list}>
-          {historyList.map(function(item) {
+          {historyList.map(function (item) {
             return (
               <div
                 key={item.timestamp}
                 className={styles.item}
-                onClick={function() {
+                onClick={function () {
                   handleCopyColor(item.hex)
                 }}
               >
-                <div
-                  className={styles.swatch}
-                  style={{ backgroundColor: item.hex }}
-                />
+                <div className={styles.swatch} style={{ backgroundColor: item.hex }} />
                 <div className={styles.colorDetails}>
                   <span className={styles.hexCode}>{item.hex}</span>
                   <span className={styles.otherFormats}>
@@ -91,7 +88,7 @@ function History(): React.JSX.Element {
                   <button
                     className={styles.actionButton}
                     title="Copiar HEX"
-                    onClick={function(e) {
+                    onClick={function (e) {
                       e.stopPropagation()
                       handleCopyColor(item.hex)
                     }}
@@ -103,7 +100,7 @@ function History(): React.JSX.Element {
                   <button
                     className={`${styles.actionButton} ${styles.delete}`}
                     title="Remover"
-                    onClick={function(e) {
+                    onClick={function (e) {
                       handleRemoveItem(e, item.timestamp)
                     }}
                   >
@@ -118,9 +115,7 @@ function History(): React.JSX.Element {
         </div>
       )}
 
-      <div className={`${styles.toast} ${toast.show ? styles.show : ""}`}>
-        {toast.text}
-      </div>
+      <div className={`${styles.toast} ${toast.show ? styles.show : ''}`}>{toast.text}</div>
     </div>
   )
 }

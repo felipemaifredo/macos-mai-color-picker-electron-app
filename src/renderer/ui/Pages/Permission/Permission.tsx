@@ -1,9 +1,9 @@
 //Imports
-import styles from "./Permission.module.css"
+import styles from './Permission.module.css'
 
 //Main
 function Permission(): React.JSX.Element {
-  let handleOpenSettings = function() {
+  let handleOpenSettings = function () {
     window.api.openSystemSettings()
   }
 
@@ -17,7 +17,8 @@ function Permission(): React.JSX.Element {
         </div>
         <h1 className={styles.title}>Permissão Necessaria</h1>
         <p className={styles.description}>
-          Para capturar cores de qualquer lugar da tela, o aplicativo precisa de permissão de Gravação de Tela do macOS.
+          Para capturar cores de qualquer lugar da tela, o aplicativo precisa de permissão de
+          Gravação de Tela do macOS.
         </p>
         <div className={styles.steps}>
           <div className={styles.step}>

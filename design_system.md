@@ -7,6 +7,7 @@ Este documento define os padrões visuais, tokens e componentes do Design System
 ## 1. Cores e Transparências
 
 ### Paleta Principal (Dark Theme & Glassmorphism)
+
 - **Overlay de Fundo (Fullscreen)**: `rgba(15, 15, 20, 0.4)` (Escurece levemente a tela mantendo a captura visível ao fundo)
 - **Fundo da Lupa/Painéis**: `rgba(28, 28, 36, 0.75)` com `backdrop-filter: blur(16px)`
 - **Fundo de Itens Ativos/Hover**: `rgba(255, 255, 255, 0.08)`
@@ -14,11 +15,13 @@ Este documento define os padrões visuais, tokens e componentes do Design System
 - **Sombra de Contorno (Glow)**: `rgba(0, 240, 255, 0.25)`
 
 ### Cores de Texto
+
 - **Texto Primário**: `#FFFFFF` (Leitura clara)
 - **Texto Secundário**: `rgba(255, 255, 255, 0.6)`
 - **Texto Muted**: `rgba(255, 255, 255, 0.38)`
 
 ### Acentos Neon
+
 - **Acento Primário (Cyan)**: `#00f0ff`
 - **Acento Secundário (Purple)**: `#bd00ff`
 - **Sucesso (Copiado)**: `#39ff14` (Green neon)

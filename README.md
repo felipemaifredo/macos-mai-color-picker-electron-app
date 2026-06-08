@@ -32,6 +32,7 @@ Uma ferramenta premium e nativa para macOS desenvolvida em **Electron**, **React
 ## 🛠️ Arquitetura do Projeto
 
 A organização de pastas segue estritamente as regras de arquitetura:
+
 ```text
 src/
 ├── main/               # Código do Processo Principal (Shortcuts, Capture, IPC, Windows)
@@ -54,6 +55,7 @@ src/
 ## 💻 Como Rodar e Testar
 
 ### Pré-requisitos
+
 - Node.js (v18 ou superior recomendado)
 - macOS (para funcionalidade de atalhos e permissões nativas de captura de tela)
 
