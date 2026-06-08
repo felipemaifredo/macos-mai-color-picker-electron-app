@@ -1,0 +1,161 @@
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  cursor: none; /* Hide standard cursor */
+  user-select: none;
+}
+
+.backgroundCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.floatingWidget {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none; /* Pass through clicks to container */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translate(-50%, -50%); /* Center on cursor */
+  transition: transform 0.05s linear;
+}
+
+.magnifierRing {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 240, 255, 0.25);
+  overflow: hidden;
+  position: relative;
+  background-color: rgba(28, 28, 36, 0.85);
+}
+
+.magnifierCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Center dot/indicator inside the magnifying glass */
+.centerReticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #00f0ff;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px rgba(0, 240, 255, 0.8);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.infoCard {
+  background: rgba(28, 28, 36, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.colorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.formatLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.colorValue {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.colorRow.active .colorValue {
+  color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+}
+
+.colorRow.active .formatLabel {
+  color: rgba(0, 240, 255, 0.7);
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.08);
+  margin: 2px 0;
+}
+
+.tips {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.38);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Copy notification toast */
+.toast {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(28, 28, 36, 0.9);
+  backdrop-filter: blur(16px);
+  border: 1px solid #39ff14;
+  box-shadow: 0 8px 32px rgba(57, 255, 20, 0.2);
+  border-radius: 8px;
+  padding: 12px 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toastTitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: #39ff14;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.toastBody {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
