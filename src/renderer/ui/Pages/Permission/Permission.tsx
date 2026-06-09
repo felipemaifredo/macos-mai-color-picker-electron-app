@@ -34,7 +34,7 @@ function Permission(): React.JSX.Element {
         </div>
         <div className={styles.step}>
           <span className={styles.stepNumber}>4</span>
-          <span>Habilite o macOS Color Picker</span>
+          <span>Habilite o Mai Color Picker</span>
         </div>
       </div>
       <button className={styles.button} onClick={handleOpenSettings}>

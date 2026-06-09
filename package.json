@@ -1,7 +1,7 @@
 {
-  "name": "macos-color-picker-electron-app",
-  "productName": "Color Picker",
-  "version": "1.0.1",
+  "name": "mai-color-picker-electron-app",
+  "productName": "Mai Color Picker",
+  "version": "1.0.2",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/main.js",
   "author": "felipemaifredo",

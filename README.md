@@ -1,4 +1,4 @@
-# macOS Color Picker (Inspirador no PowerToys)
+# Mai Color Picker (Inspirador no PowerToys)
 
 Uma ferramenta premium e nativa para macOS desenvolvida em **Electron**, **React**, **TypeScript** e **Vite**, projetada para capturar e gerenciar cores de qualquer pixel da tela de forma extremamente fluida e com efeitos visuais modernos (Glassmorphism e Neon).
 

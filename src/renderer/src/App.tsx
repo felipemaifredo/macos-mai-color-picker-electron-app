@@ -66,7 +66,7 @@ function App(): React.JSX.Element {
         textAlign: "center"
       }}
     >
-      <h1>macOS Color Picker</h1>
+      <h1>Mai Color Picker</h1>
       <p style={{ color: "rgba(255, 255, 255, 0.6)" }}>
         Pressione CMD + SHIFT + C para iniciar o capturador.
       </p>

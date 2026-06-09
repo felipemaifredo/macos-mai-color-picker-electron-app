@@ -1,6 +1,6 @@
-# Design System: macOS Color Picker (Glassmorphism Dark Theme)
+# Design System: Mai Color Picker (Glassmorphism Dark Theme)
 
-Este documento define os padrões visuais, tokens e componentes do Design System para o aplicativo **macOS Color Picker**. Ele serve como guia para a estilização dos componentes e páginas utilizando CSS Modules.
+Este documento define os padrões visuais, tokens e componentes do Design System para o aplicativo **Mai Color Picker**. Ele serve como guia para a estilização dos componentes e páginas utilizando CSS Modules.
 
 ---
 

@@ -22,7 +22,7 @@ import { captureActiveScreen } from "./screenCapture"
 import { ColorHistoryItem } from "../renderer/types"
 
 // Set application name
-app.setName("Color Picker")
+app.setName("Mai Color Picker")
 
 //Consts
 let HISTORY_FILE_PATH = ""
@@ -59,7 +59,7 @@ let tray: Tray | null = null
 
 function createHistoryWindow(): void {
   let win = new BrowserWindow({
-    title: "Color Picker",
+    title: "Mai Color Picker",
     width: 360,
     height: 580,
     minWidth: 360,
@@ -125,7 +125,7 @@ function createTray(): void {
     }
 
     tray = new Tray(trayIcon)
-    tray.setToolTip("Color Picker")
+    tray.setToolTip("Mai Color Picker")
 
     let contextMenu = Menu.buildFromTemplate([
       {
@@ -236,7 +236,7 @@ async function startColorPicker(): Promise<void> {
       win.loadFile(join(__dirname, "../renderer/index.html"), { query: { page: "picker" } })
     }
   } catch (error) {
-    console.error("Falha ao iniciar o Color Picker:", error)
+    console.error("Falha ao iniciar o Mai Color Picker:", error)
     if (historyWindow) {
       historyWindow.show()
     }
