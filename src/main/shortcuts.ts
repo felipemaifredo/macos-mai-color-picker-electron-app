@@ -1,5 +1,5 @@
 //Libs
-import { globalShortcut } from 'electron'
+import { globalShortcut } from "electron"
 
 //Funcs
 export function registerGlobalShortcut(shortcut: string, callback: () => void): boolean {

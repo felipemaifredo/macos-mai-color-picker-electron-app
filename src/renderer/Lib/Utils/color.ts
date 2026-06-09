@@ -19,20 +19,20 @@ export type HSV = {
 
 //Funcs
 export function rgbToHex(r: number, g: number, b: number): string {
-  let rHex = Math.max(0, Math.min(255, r)).toString(16).padStart(2, '0')
-  let gHex = Math.max(0, Math.min(255, g)).toString(16).padStart(2, '0')
-  let bHex = Math.max(0, Math.min(255, b)).toString(16).padStart(2, '0')
+  let rHex = Math.max(0, Math.min(255, r)).toString(16).padStart(2, "0")
+  let gHex = Math.max(0, Math.min(255, g)).toString(16).padStart(2, "0")
+  let bHex = Math.max(0, Math.min(255, b)).toString(16).padStart(2, "0")
   return `#${rHex}${gHex}${bHex}`.toUpperCase()
 }
 
 export function hexToRgb(hex: string): RGB | null {
-  let cleanHex = hex.replace(/^#/, '')
+  let cleanHex = hex.replace(/^#/, "")
 
   if (cleanHex.length === 3) {
     cleanHex = cleanHex
-      .split('')
+      .split("")
       .map((char) => char + char)
-      .join('')
+      .join("")
   }
 
   if (cleanHex.length !== 6) {

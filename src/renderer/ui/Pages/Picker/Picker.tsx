@@ -1,9 +1,9 @@
 //Libs
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from "react"
 
 //Imports
-import { rgbToHex, rgbToHsl, rgbToHsv } from '../../../Lib/Utils/color'
-import styles from './Picker.module.css'
+import { rgbToHex, rgbToHsl, rgbToHsv } from "../../../Lib/Utils/color"
+import styles from "./Picker.module.css"
 
 //Types
 type ColorInfo = {
@@ -53,92 +53,25 @@ function Picker(): React.JSX.Element {
     }
   }, [])
 
-  // Load screen capture on start
-  useEffect(function () {
-    let handleCapture = function (imgDataUrl: string) {
-      let img = new Image()
-      img.src = imgDataUrl
-      img.onload = function () {
-        imageRef.current = img
-        setIsImageLoaded(true)
-
-        // Draw static background screenshot
-        let bgCanvas = bgCanvasRef.current
-        if (bgCanvas) {
-          bgCanvas.width = window.innerWidth
-          bgCanvas.height = window.innerHeight
-          let ctx = bgCanvas.getContext("2d")
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, window.innerWidth, window.innerHeight)
-          }
-        }
-
-        // Draw offscreen canvas for exact pixel values
-        let offCanvas = document.createElement("canvas")
-        offCanvas.width = img.width
-        offCanvas.height = img.height
-        let offCtx = offCanvas.getContext("2d")
-        if (offCtx) {
-          offCtx.drawImage(img, 0, 0)
-        }
-        offscreenCanvasRef.current = offCanvas
-      }
-    }
-
-    window.api.onScreenCaptured(handleCapture)
-  }, [])
-
-  // Listen to keyboard shortcuts
-  useEffect(
-    function () {
-      let handleKeyDown = function (event: KeyboardEvent) {
-        if (event.key === "Escape") {
-          window.api.cancelSelection()
-        } else if (event.key === "Enter") {
-          event.preventDefault()
-          let textToCopy = color.rgb
-
-          // Direct clipboard copy & notify main process
-          window.api.copyToClipboard(textToCopy)
-
-          setToast({ show: true, text: textToCopy })
-          setTimeout(function () {
-            window.api.selectColor({
-              hex: color.hex,
-              rgb: color.rgb,
-              hsl: color.hsl,
-              hsv: color.hsv,
-              selectedFormatText: textToCopy
-            } as any)
-          }, 800)
-        }
-      }
-
-      window.addEventListener("keydown", handleKeyDown)
-      return function () {
-        window.removeEventListener("keydown", handleKeyDown)
-      }
-    },
-    [color]
-  )
-
-  let handleMouseMove = function (event: React.MouseEvent<HTMLDivElement>) {
-    let mouseX = event.clientX
-    let mouseY = event.clientY
-    setMousePos({ x: mouseX, y: mouseY })
+  function updateColorAtPosition(x: number, y: number): void {
+    setMousePos({ x, y })
 
     let img = imageRef.current
     let offCanvas = offscreenCanvasRef.current
-    if (!img || !offCanvas) return
+    if (!img || !offCanvas) {
+      return
+    }
 
     let offCtx = offCanvas.getContext("2d", { willReadFrequently: true })
-    if (!offCtx) return
+    if (!offCtx) {
+      return
+    }
 
     // Map logical mouse coordinates to physical image coordinates
     let scaleX = img.width / window.innerWidth
     let scaleY = img.height / window.innerHeight
-    let physicalX = Math.round(mouseX * scaleX)
-    let physicalY = Math.round(mouseY * scaleY)
+    let physicalX = Math.round(x * scaleX)
+    let physicalY = Math.round(y * scaleY)
 
     // Clamp coordinates to image boundaries
     physicalX = Math.max(0, Math.min(img.width - 1, physicalX))
@@ -167,7 +100,92 @@ function Picker(): React.JSX.Element {
     }
   }
 
-  let handleSelectColor = function () {
+  // Load screen capture on start
+  useEffect(function () {
+    window.api
+      .getScreenCapture()
+      .then(function (capture) {
+        if (!capture) {
+          return
+        }
+
+        let img = new Image()
+        img.src = capture.imgDataUrl
+        img.onload = function () {
+          imageRef.current = img
+          setIsImageLoaded(true)
+
+          // Draw static background screenshot
+          let bgCanvas = bgCanvasRef.current
+          if (bgCanvas) {
+            bgCanvas.width = window.innerWidth
+            bgCanvas.height = window.innerHeight
+            let ctx = bgCanvas.getContext("2d")
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, window.innerWidth, window.innerHeight)
+            }
+          }
+
+          // Draw offscreen canvas for exact pixel values
+          let offCanvas = document.createElement("canvas")
+          offCanvas.width = img.width
+          offCanvas.height = img.height
+          let offCtx = offCanvas.getContext("2d")
+          if (offCtx) {
+            offCtx.drawImage(img, 0, 0)
+          }
+          offscreenCanvasRef.current = offCanvas
+
+          // Initialize position and color under the cursor immediately
+          if (capture.initialCursor) {
+            updateColorAtPosition(capture.initialCursor.x, capture.initialCursor.y)
+          }
+        }
+      })
+      .catch(function (error) {
+        console.error("Falha ao obter captura de tela:", error)
+      })
+  }, [])
+
+  // Listen to keyboard shortcuts
+  useEffect(
+    function () {
+      let handleKeyDown = function (event: KeyboardEvent): void {
+        if (event.key === "Escape") {
+          window.api.cancelSelection()
+        } else if (event.key === "Enter") {
+          event.preventDefault()
+          let textToCopy = color.rgb
+
+          // Direct clipboard copy & notify main process
+          window.api.copyToClipboard(textToCopy)
+
+          setToast({ show: true, text: textToCopy })
+          setTimeout(function () {
+            window.api.selectColor({
+              hex: color.hex,
+              rgb: color.rgb,
+              hsl: color.hsl,
+              hsv: color.hsv,
+              selectedFormatText: textToCopy
+            })
+          }, 800)
+        }
+      }
+
+      window.addEventListener("keydown", handleKeyDown)
+      return function () {
+        window.removeEventListener("keydown", handleKeyDown)
+      }
+    },
+    [color]
+  )
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>): void {
+    updateColorAtPosition(event.clientX, event.clientY)
+  }
+
+  function handleSelectColor(): void {
     // Click action copies RGB and closes
     window.api.copyToClipboard(color.rgb)
     setToast({ show: true, text: color.rgb })
@@ -178,7 +196,7 @@ function Picker(): React.JSX.Element {
         hsl: color.hsl,
         hsv: color.hsv,
         selectedFormatText: color.rgb
-      } as any)
+      })
     }, 800)
   }
 

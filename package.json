@@ -1,7 +1,7 @@
 {
   "name": "macos-color-picker-electron-app",
   "productName": "Color Picker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/main.js",
   "author": "felipemaifredo",

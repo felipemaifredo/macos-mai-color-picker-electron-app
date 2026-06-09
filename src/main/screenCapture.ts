@@ -1,5 +1,5 @@
 //Libs
-import { desktopCapturer, screen } from 'electron'
+import { desktopCapturer, screen } from "electron"
 
 //Types
 type CaptureResult = {
@@ -9,6 +9,10 @@ type CaptureResult = {
     y: number
     width: number
     height: number
+  }
+  initialCursor: {
+    x: number
+    y: number
   }
 }
 
@@ -22,7 +26,7 @@ export async function captureActiveScreen(): Promise<CaptureResult> {
   let height = Math.round(bounds.height * scaleFactor)
 
   let sources = await desktopCapturer.getSources({
-    types: ['screen'],
+    types: ["screen"],
     thumbnailSize: { width, height }
   })
 
@@ -34,7 +38,12 @@ export async function captureActiveScreen(): Promise<CaptureResult> {
   }
 
   if (!matchedSource) {
-    throw new Error('Não foi possível encontrar uma fonte de captura de tela.')
+    throw new Error("Não foi possível encontrar uma fonte de captura de tela.")
+  }
+
+  let initialCursor = {
+    x: cursorPoint.x - bounds.x,
+    y: cursorPoint.y - bounds.y
   }
 
   return {
@@ -44,6 +53,7 @@ export async function captureActiveScreen(): Promise<CaptureResult> {
       y: bounds.y,
       width: bounds.width,
       height: bounds.height
-    }
+    },
+    initialCursor
   }
 }
