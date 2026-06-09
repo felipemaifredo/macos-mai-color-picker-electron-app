@@ -2,6 +2,7 @@ appId: com.electron.app
 productName: Mai Color Picker
 directories:
   buildResources: build
+  output: release
 files:
   - "!**/.vscode/*"
   - "!src/*"
