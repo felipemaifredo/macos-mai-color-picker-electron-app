@@ -27,7 +27,71 @@ app.setName("Mai Color Picker")
 //Consts
 let HISTORY_FILE_PATH = ""
 
+//Types
+type MainTranslations = {
+  tray: {
+    openHistory: string
+    captureColor: string
+    quit: string
+  }
+  notification: {
+    title: string
+    body: string
+  }
+}
+
 //Funcs
+function getLocale(): "en" | "pt" | "es" {
+  let locale = app.getLocale().toLowerCase()
+  if (locale.startsWith("pt")) {
+    return "pt"
+  }
+  if (locale.startsWith("es")) {
+    return "es"
+  }
+  return "en"
+}
+
+function getTranslations(): MainTranslations {
+  let locale = getLocale()
+  let translations = {
+    en: {
+      tray: {
+        openHistory: "Open History",
+        captureColor: "Capture Color",
+        quit: "Quit"
+      },
+      notification: {
+        title: "Color Copied!",
+        body: "{text} copied to clipboard."
+      }
+    },
+    pt: {
+      tray: {
+        openHistory: "Abrir Histórico",
+        captureColor: "Capturar Cor",
+        quit: "Sair"
+      },
+      notification: {
+        title: "Cor Copiada!",
+        body: "{text} copiado para a área de transferência."
+      }
+    },
+    es: {
+      tray: {
+        openHistory: "Abrir Historial",
+        captureColor: "Capturar Color",
+        quit: "Salir"
+      },
+      notification: {
+        title: "¡Color Copiado!",
+        body: "{text} copiado al portapapeles."
+      }
+    }
+  }
+  return translations[locale] || translations.en
+}
+
 function readHistoryFromFile(): ColorHistoryItem[] {
   try {
     if (fs.existsSync(HISTORY_FILE_PATH)) {
@@ -127,22 +191,23 @@ function createTray(): void {
     tray = new Tray(trayIcon)
     tray.setToolTip("Mai Color Picker")
 
+    let t = getTranslations()
     let contextMenu = Menu.buildFromTemplate([
       {
-        label: "Abrir Histórico",
+        label: t.tray.openHistory,
         click: function () {
           showHistoryWindow()
         }
       },
       {
-        label: "Capturar Cor",
+        label: t.tray.captureColor,
         click: function () {
           startColorPicker()
         }
       },
       { type: "separator" },
       {
-        label: "Sair",
+        label: t.tray.quit,
         click: function () {
           app.quit()
         }
@@ -318,9 +383,10 @@ function setupIpcHandlers(): void {
         pickerWindow.close()
       }
 
+      let t = getTranslations()
       new Notification({
-        title: "Cor Copiada!",
-        body: `${textToCopy} copiado para a área de transferência.`,
+        title: t.notification.title,
+        body: t.notification.body.replace("{text}", textToCopy),
         silent: true
       }).show()
     }

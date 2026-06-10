@@ -1,7 +1,7 @@
 {
   "name": "mai-color-picker-electron-app",
   "productName": "Mai Color Picker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/main.js",
   "author": "felipemaifredo",

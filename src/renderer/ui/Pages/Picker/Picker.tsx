@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react"
 
 //Imports
 import { rgbToHex, rgbToHsl, rgbToHsv } from "../../../Lib/Utils/color"
+import useI18n from "../../../Lib/Hooks/useI18n"
 import styles from "./Picker.module.css"
 
 //Types
@@ -15,6 +16,7 @@ type ColorInfo = {
 
 //Main
 function Picker(): React.JSX.Element {
+  let { t } = useI18n()
   let [color, setColor] = useState<ColorInfo>({
     hex: "#000000",
     rgb: "rgb(0, 0, 0)",
@@ -249,7 +251,7 @@ function Picker(): React.JSX.Element {
       )}
 
       <div className={`${styles.toast} ${toast.show ? styles.show : ""}`}>
-        <span className={styles.toastTitle}>Cor Copiada!</span>
+        <span className={styles.toastTitle}>{t.picker.colorCopied}</span>
         <span className={styles.toastBody}>{toast.text}</span>
       </div>
     </div>

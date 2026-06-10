@@ -3,10 +3,12 @@ import { useState, useEffect } from "react"
 
 //Imports
 import { ColorHistoryItem } from "../../../types"
+import useI18n from "../../../Lib/Hooks/useI18n"
 import styles from "./History.module.css"
 
 //Main
 function History(): React.JSX.Element {
+  let { t, locale, changeLanguage } = useI18n()
   let [historyList, setHistoryList] = useState<ColorHistoryItem[]>([])
   let [activeColor, setActiveColor] = useState<ColorHistoryItem | null>(null)
   let [toast, setToast] = useState<{ show: boolean; text: string }>({ show: false, text: "" })
@@ -72,7 +74,7 @@ function History(): React.JSX.Element {
 
   function handleCopyColor(text: string): void {
     window.api.copyToClipboard(text)
-    setToast({ show: true, text: `Copiado: ${text}` })
+    setToast({ show: true, text: t.history.copied.replace("{text}", text) })
     setTimeout(function () {
       setToast({ show: false, text: "" })
     }, 1500)
@@ -109,17 +111,17 @@ function History(): React.JSX.Element {
               <svg className={styles.backIcon} viewBox="0 0 24 24">
                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
               </svg>
-              Voltar
+              {t.history.back}
             </button>
             <span className={styles.title} style={{ marginTop: "8px" }}>
-              Configurações
+              {t.history.settings}
             </span>
           </div>
         </header>
 
         <div className={styles.settingsContent}>
           <div className={styles.settingsGroup}>
-            <span className={styles.groupTitle}>Tema da Interface</span>
+            <span className={styles.groupTitle}>{t.history.interfaceTheme}</span>
             <div className={styles.optionsGrid}>
               <button
                 className={`${styles.optionCard} ${theme === "light" ? styles.optionActive : ""}`}
@@ -127,7 +129,7 @@ function History(): React.JSX.Element {
                   updateTheme("light")
                 }}
               >
-                Tema Claro
+                {t.history.themeLight}
               </button>
               <button
                 className={`${styles.optionCard} ${theme === "dark" ? styles.optionActive : ""}`}
@@ -135,7 +137,7 @@ function History(): React.JSX.Element {
                   updateTheme("dark")
                 }}
               >
-                Tema Escuro
+                {t.history.themeDark}
               </button>
               <button
                 className={`${styles.optionCard} ${theme === "system" ? styles.optionActive : ""}`}
@@ -143,13 +145,13 @@ function History(): React.JSX.Element {
                   updateTheme("system")
                 }}
               >
-                Padrão do Sistema
+                {t.history.themeSystem}
               </button>
             </div>
           </div>
 
           <div className={styles.settingsGroup}>
-            <span className={styles.groupTitle}>Efeito da Janela</span>
+            <span className={styles.groupTitle}>{t.history.windowEffect}</span>
             <div className={styles.optionsGrid}>
               <button
                 className={`${styles.optionCard} ${effect === "translucent" ? styles.optionActive : ""}`}
@@ -157,7 +159,7 @@ function History(): React.JSX.Element {
                   updateEffect("translucent")
                 }}
               >
-                Translúcido
+                {t.history.effectTranslucent}
               </button>
               <button
                 className={`${styles.optionCard} ${effect === "solid" ? styles.optionActive : ""}`}
@@ -165,7 +167,7 @@ function History(): React.JSX.Element {
                   updateEffect("solid")
                 }}
               >
-                Tonalizado (Sólido)
+                {t.history.effectSolid}
               </button>
               <button
                 className={`${styles.optionCard} ${effect === "system" ? styles.optionActive : ""}`}
@@ -173,7 +175,37 @@ function History(): React.JSX.Element {
                   updateEffect("system")
                 }}
               >
-                Padrão do Sistema
+                {t.history.themeSystem}
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.settingsGroup}>
+            <span className={styles.groupTitle}>{t.history.language}</span>
+            <div className={styles.optionsGrid}>
+              <button
+                className={`${styles.optionCard} ${locale === "en" ? styles.optionActive : ""}`}
+                onClick={function () {
+                  changeLanguage("en")
+                }}
+              >
+                English
+              </button>
+              <button
+                className={`${styles.optionCard} ${locale === "pt" ? styles.optionActive : ""}`}
+                onClick={function () {
+                  changeLanguage("pt")
+                }}
+              >
+                Português
+              </button>
+              <button
+                className={`${styles.optionCard} ${locale === "es" ? styles.optionActive : ""}`}
+                onClick={function () {
+                  changeLanguage("es")
+                }}
+              >
+                Español
               </button>
             </div>
           </div>
@@ -186,14 +218,14 @@ function History(): React.JSX.Element {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.titleContainer}>
-          <span className={styles.title}>Histórico de Cores</span>
-          <span className={styles.subtitle}>Últimas 20 cores selecionadas</span>
+          <span className={styles.title}>{t.history.historyTitle}</span>
+          <span className={styles.subtitle}>{t.history.historySubtitle}</span>
         </div>
         <div className={styles.headerActions}>
           <button
             className={styles.pickerButton}
             onClick={handleStartPicker}
-            title="Capturar Cor (Cmd+Shift+C)"
+            title={t.history.captureColorTooltip}
           >
             <svg className={styles.pickerIcon} viewBox="0 0 24 24">
               <path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
@@ -203,7 +235,7 @@ function History(): React.JSX.Element {
             <button
               className={styles.clearButton}
               onClick={handleClearHistory}
-              title="Limpar Histórico"
+              title={t.history.clearHistoryTooltip}
             >
               <svg className={styles.clearIcon} viewBox="0 0 24 24">
                 <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
@@ -215,7 +247,7 @@ function History(): React.JSX.Element {
             onClick={function () {
               setIsSettingsOpen(true)
             }}
-            title="Configurações"
+            title={t.history.settings}
           >
             <svg className={styles.settingsIcon} viewBox="0 0 24 24">
               <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
@@ -230,11 +262,11 @@ function History(): React.JSX.Element {
             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z" />
           </svg>
           <div className={styles.emptyText}>
-            Nenhuma cor no histórico.
-            <div className={styles.emptyShortcut}>Pressione CMD + SHIFT + C</div>
+            {t.history.emptyHistory}
+            <div className={styles.emptyShortcut}>{t.history.pressShortcut}</div>
           </div>
           <button className={styles.emptyPickerButton} onClick={handleStartPicker}>
-            Capturar Cor
+            {t.history.captureColorBtn}
           </button>
         </div>
       ) : (
@@ -242,7 +274,7 @@ function History(): React.JSX.Element {
           <div className={styles.content}>
             <div className={styles.historySection}>
               <div className={styles.sectionHeader}>
-                <span className={styles.sectionTitle}>Cores Recentes</span>
+                <span className={styles.sectionTitle}>{t.history.recentColors}</span>
                 <span className={styles.itemCount}>{historyList.length}/20</span>
               </div>
               <div className={styles.swatchesScroll}>
@@ -270,7 +302,7 @@ function History(): React.JSX.Element {
                   <span className={styles.activeHex}>{activeColor.hex}</span>
                   <button
                     className={styles.deleteActiveButton}
-                    title="Remover do histórico"
+                    title={t.history.removeFromHistory}
                     onClick={function () {
                       handleRemoveItem(activeColor.timestamp)
                     }}
@@ -288,7 +320,7 @@ function History(): React.JSX.Element {
                   <span className={styles.formatValue}>{activeColor.hex}</span>
                   <button
                     className={styles.copyCardButton}
-                    title="Copiar HEX"
+                    title={t.history.copyHex}
                     onClick={function () {
                       handleCopyColor(activeColor.hex)
                     }}
@@ -304,7 +336,7 @@ function History(): React.JSX.Element {
                   <span className={styles.formatValue}>{activeColor.rgb}</span>
                   <button
                     className={styles.copyCardButton}
-                    title="Copiar RGB"
+                    title={t.history.copyRgb}
                     onClick={function () {
                       handleCopyColor(activeColor.rgb)
                     }}
@@ -320,7 +352,7 @@ function History(): React.JSX.Element {
                   <span className={styles.formatValue}>{activeColor.hsl}</span>
                   <button
                     className={styles.copyCardButton}
-                    title="Copiar HSL"
+                    title={t.history.copyHsl}
                     onClick={function () {
                       handleCopyColor(activeColor.hsl)
                     }}
@@ -337,7 +369,7 @@ function History(): React.JSX.Element {
                     <span className={styles.formatValue}>{activeColor.hsv}</span>
                     <button
                       className={styles.copyCardButton}
-                      title="Copiar HSV"
+                      title={t.history.copyHsv}
                       onClick={function () {
                         if (activeColor.hsv) {
                           handleCopyColor(activeColor.hsv)

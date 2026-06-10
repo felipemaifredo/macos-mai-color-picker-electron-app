@@ -5,9 +5,11 @@ import { useState, useEffect } from "react"
 import Picker from "../ui/Pages/Picker/Picker"
 import History from "../ui/Pages/History/History"
 import Permission from "../ui/Pages/Permission/Permission"
+import useI18n from "../Lib/Hooks/useI18n"
 
 //Main
 function App(): React.JSX.Element {
+  let { t } = useI18n()
   let [page, setPage] = useState<string | null>(null)
   let [hasPermission, setHasPermission] = useState<boolean | null>(null)
 
@@ -45,7 +47,7 @@ function App(): React.JSX.Element {
     if (hasPermission === null) {
       return (
         <div style={{ color: "#ffffff", padding: "24px", fontFamily: "-apple-system, sans-serif" }}>
-          Verificando permissão...
+          {t.app.checkingPermission}
         </div>
       )
     }
@@ -68,7 +70,7 @@ function App(): React.JSX.Element {
     >
       <h1>Mai Color Picker</h1>
       <p style={{ color: "rgba(255, 255, 255, 0.6)" }}>
-        Pressione CMD + SHIFT + C para iniciar o capturador.
+        {t.app.shortcutTip}
       </p>
     </div>
   )
