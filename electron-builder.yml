@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.felipemaifredo.maicolorpicker
 productName: Mai Color Picker
 directories:
   buildResources: build
@@ -21,7 +21,7 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
-  icon: assets/mac/icon-3.icns
+  icon: assets/mac/logo-1024.icns
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
